@@ -60,7 +60,7 @@ const registerAdmin = async (username: string, email: string, password: string, 
 
 
     const userData: NewUser = {
-        tenant_id: process.env.SERVER_TENANT_ID,
+        tenant_id: SERVER_TENANT_ID,
         username,
         email,
         password: hashedPassword,
