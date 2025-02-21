@@ -1,5 +1,5 @@
 import { db } from "../../../src/db";
-import { NewPayment } from "@db/schema/orders/payment";
+import { NewPayment } from "../../../db/schema/payment";
 import * as schemaPayment from "../../../db/schema/payment";
 import * as schemaOrder from "../../../db/schema/order";
 import * as schemaOrderDetail from "../../../db/schema/orderDetail";
