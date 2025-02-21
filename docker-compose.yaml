@@ -1,27 +1,49 @@
-version: '3.8'
+version: "3.8"
 
 services:
-  marketplace:
-    build: .
+  auth:
+    build: ./auth
     ports:
-      - "8000:8000"
+      - "8888:8888"
     environment:
-      - TENANT_ID=47dd6b24-0b23-46b0-a662-776158d089ba
       - JWT_SECRET=auth_ms_jwt_secret
-      - DB_HOST=db
-      - DB_PORT=5432
-      - DB_USER=postgres
-      - DB_PASSWORD=postgres
-      - DB_NAME=marketplace
-    depends_on:
-      - db
+      - TENANT_ID=47dd6b24-0b23-46b0-a662-776158d089ba
+
+  product:
+    build: ./product
+    ports:
+      - "8890:8890"
+    environment:
+      - JWT_SECRET=auth_ms_jwt_secret
+
+  order:
+    build: ./order
+    ports:
+      - "8891:8891"
+    environment:
+      - JWT_SECRET=auth_ms_jwt_secret
+
+  tenant:
+    build: ./tenant
+    ports:
+      - "8889:8889"
+    environment:
+      - JWT_SECRET=auth_ms_jwt_secret
+      - TENANT_ID=47dd6b24-0b23-46b0-a662-776158d089ba
+
+  wishlist:
+    build: ./wishlist
+    ports:
+      - "8892:8892"
+    environment:
+      - JWT_SECRET=auth_ms_jwt_secret
 
   db:
     image: postgres:latest
     environment:
       POSTGRES_DB: marketplace
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: my-password
     ports:
       - "5432:5432"
     volumes:

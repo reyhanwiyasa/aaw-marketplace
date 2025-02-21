@@ -16,6 +16,7 @@ export const verifyJWTProduct = async (
     }
 
     const payload = await verifyAdminTokenService(token);
+    console.log("ini paylod jwtproduct: ", payload);
     if (payload.status !== 200) {
       return res.status(401).send({ message: "Invalid token" });
     }
@@ -32,7 +33,8 @@ export const verifyJWTProduct = async (
           phone_number: string | null;
         };
       };
-    }
+    };
+    console.log("ini verifiedpayload: ", verifiedPayload);
 
     const SERVER_TENANT_ID = process.env.TENANT_ID;
     if (!SERVER_TENANT_ID) {
@@ -40,10 +42,8 @@ export const verifyJWTProduct = async (
     }
     const tenantPayload = await getTenantService(SERVER_TENANT_ID);
 
-    if (
-      tenantPayload.status !== 200 ||
-      !tenantPayload.data
-    ) {
+    if (tenantPayload.status !== 200 || !tenantPayload.data) {
+      console.log("ini tenantpayload: ", tenantPayload);
       return res.status(500).send({ message: "Server Tenant not found" });
     }
 
@@ -63,15 +63,18 @@ export const verifyJWTProduct = async (
     };
 
     // Check for tenant ownership
-    if (verifiedPayload.data.user.id !== verifiedTenantPayload.data.tenants.owner_id) {
-      return res.status(401).send({ message: "Invalid token" });
+    if (
+      verifiedPayload.data.user.id !==
+      verifiedTenantPayload.data.tenants.owner_id
+    ) {
+      return res.status(401).send({ message: "Invalid tokenaaaa" });
     }
 
     req.body.user = verifiedPayload.data.user;
     next();
   } catch (error) {
-    return res.status(401).json(
-      new UnauthenticatedResponse("Invalid token").generate()
-    );
+    return res
+      .status(401)
+      .json(new UnauthenticatedResponse("Invalid token").generate());
   }
 };

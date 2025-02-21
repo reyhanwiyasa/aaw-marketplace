@@ -37,13 +37,13 @@ export const verifyJWTTenant = async (
           phone_number: string | null;
         };
       };
-    }
+    };
 
     req.body.user = verifiedPayload.data.user;
     next();
   } catch (error) {
-    return res.status(401).json(
-      new UnauthenticatedResponse("Invalid token").generate()
-    );
+    return res
+      .status(401)
+      .json(new UnauthenticatedResponse("Invalid token").generate());
   }
 };
