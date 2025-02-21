@@ -1,7 +1,7 @@
 import {
   InternalServerErrorResponse,
   NotFoundResponse,
-} from "@src/shared/commons/patterns";
+} from "../src/commons/patterns";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 

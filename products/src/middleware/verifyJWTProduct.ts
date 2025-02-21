@@ -43,7 +43,12 @@ export const verifyJWTProduct = async (
     // Call getTenantService from the auth service
     console.log("Making request to get tenant details...");
     const tenantResponse = await axios.get(
-      `${process.env.TENANT_MS_URL}/${SERVER_TENANT_ID}`
+      `${process.env.TENANT_MS_URL}/${SERVER_TENANT_ID}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
     console.log("Response from tenant service:", tenantResponse.data);
     if (tenantResponse.status !== 200 || !tenantResponse.data) {
