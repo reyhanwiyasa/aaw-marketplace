@@ -1,5 +1,5 @@
 import { NewWishlist } from "../../../db/schema/wishlist";
-import { InternalServerErrorResponse } from "@src/shared/commons/patterns";
+import { InternalServerErrorResponse } from "../../../src/commons/patterns";
 import { createWishlist } from "../dao/createWishlist.dao";
 import { User } from "../../../types";
 
