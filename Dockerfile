@@ -19,8 +19,6 @@ ENV NODE_ENV production
 
 WORKDIR /auth
 
-RUN npm install -g pnpm
-
 COPY --from=builder /auth/dist ./dist
 COPY --from=builder /auth/package.json ./package.json
 

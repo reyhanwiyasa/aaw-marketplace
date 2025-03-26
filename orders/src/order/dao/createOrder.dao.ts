@@ -17,10 +17,17 @@ export const createOrder = async (
 ) => {
   const result = await db.transaction(async (trx) => {
     // calculate total amount
+
+    console.log(
+      "Product IDs from Cart Items:",
+      cart_items.map((item) => item.product_id)
+    );
+    console.log("Available Products Data:", products_data);
     const total_amount = cart_items.reduce((acc, item) => {
       const product = products_data.find(
         (product) => product.id === item.product_id
       );
+      console.log("ini product.data di dao: ", products_data);
 
       if (!product) {
         throw new Error("Product not found");

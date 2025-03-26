@@ -1,41 +1,43 @@
-# Base image with Node.js
+# Stage 1: Fetching the node image and building the application
 FROM node:18.18.2 AS builder
 
-# Set working directory in the container
-WORKDIR /app
+# Setting up the work directory
+WORKDIR /service-orders
 
-# Copy the package.json file and install pnpm and typescript
+# Copying package.json separately
 COPY package.json ./
+
+# Install pnpm
 RUN npm install -g pnpm typescript
 
-# Install dependencies
+# Installing dependencies
 RUN pnpm install
 
-# Copy the rest of the code
+# Copying the rest of the application
 COPY . .
 
-# Build the application
+# Building our application
 RUN pnpm run build
 
-# Production image using slim version of Node.js
+# Stage 2: Creating a lightweight image for production
 FROM node:18.18.2-slim
 
-# Environment variables
-ENV PORT 8891
+# Declaring env
+ENV PORT 8001
 ENV NODE_ENV production
 
-# Set working directory in the container
-WORKDIR /app
+# Set working directory
+WORKDIR /service-orders
 
-# Copy built artifacts from the builder stage
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/package.json ./package.json
+# Copy built files from the previous stage
+COPY --from=builder /service-orders/dist ./dist
+COPY --from=builder /service-orders/package.json ./package.json
 
-# Install production dependencies
+# Install production dependencies only
 RUN npm install --only=production
 
-# Expose the port the app runs on
-EXPOSE 8891
+# Expose server port
+EXPOSE 8001
 
-# Command to run the application
+# Start the application
 CMD ["node", "dist/src/server.js"]

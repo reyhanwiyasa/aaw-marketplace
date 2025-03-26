@@ -54,7 +54,7 @@ export const placeOrderService = async (
     }
 
     const products: AxiosResponse<Product[], any> = await axios.post(
-      `http://localhost:8890/api/product/many`,
+      `${process.env.PRODUCT_MS_URL}/many`,
       { productIds }
     );
     console.log("Products retrieved:", products.data);
