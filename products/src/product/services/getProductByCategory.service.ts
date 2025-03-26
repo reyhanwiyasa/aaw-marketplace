@@ -11,7 +11,7 @@ export const getProductByCategoryService = async (category_id: string) => {
     }
 
     const products = await getProductByCategory(SERVER_TENANT_ID, category_id);
-
+    console.log("ini products: ", products);
     return {
       data: {
         products,

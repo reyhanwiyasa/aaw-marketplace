@@ -7,6 +7,8 @@ const router = express.Router();
 
 router.get("", Handler.getAllProductsHandler);
 router.get("/category", Handler.getAllCategoryHandler);
+
+// getProductById v2
 router.get(
   "/:id",
   validate(Validation.getProductByIdSchema),

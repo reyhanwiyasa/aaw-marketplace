@@ -1,4 +1,7 @@
-import { InternalServerErrorResponse } from "../../../src/commons/patterns";
+import {
+  InternalServerErrorResponse,
+  NotFoundResponse,
+} from "../../../src/commons/patterns";
 import { getProductById } from "../dao/getProductById.dao";
 
 export const getProductByIdService = async (id: string) => {
@@ -10,11 +13,15 @@ export const getProductByIdService = async (id: string) => {
       ).generate();
     }
 
-    const products = await getProductById(SERVER_TENANT_ID, id);
+    const product = await getProductById(SERVER_TENANT_ID, id);
+
+    if (!product) {
+      return new NotFoundResponse("Product not found").generate();
+    }
 
     return {
       data: {
-        ...products,
+        ...product,
       },
       status: 200,
     };
