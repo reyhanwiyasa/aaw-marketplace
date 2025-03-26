@@ -1,7 +1,10 @@
 import bcrypt from "bcrypt";
 import { NewUser } from "../../../db/schema/users";
 import { insertNewUser } from "../dao/insertNewUser.dao";
-import { InternalServerErrorResponse } from "../../commons/patterns";
+import {
+  InternalServerErrorResponse,
+  ConflictResponse,
+} from "../../commons/patterns";
 
 export const registerService = async (
   username: string,
@@ -30,7 +33,7 @@ export const registerService = async (
       address,
       phone_number,
     };
-    console.log("userData===>", userData);
+
     const newUser = await insertNewUser(userData);
 
     return {
@@ -38,6 +41,13 @@ export const registerService = async (
       status: 201,
     };
   } catch (err: any) {
+    if (err?.code === "23505") {
+      // PostgreSQL unique violation
+      return new ConflictResponse(
+        "A user with this username or email already exists."
+      ).generate();
+    }
+
     return new InternalServerErrorResponse(err).generate();
   }
 };

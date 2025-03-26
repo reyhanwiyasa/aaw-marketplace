@@ -34,11 +34,6 @@ app.use(express.json());
 
 // Routes
 app.use("/api/auth", authRoutes);
-// app.use('/api/order', orderRoutes);
-// app.use('/api/cart', cartRoutes);
-// app.use("/api/product", productRoutes);
-// app.use("/api/tenant", tenantRoutes);
-// app.use('/api/wishlist', wishlistRoutes);
 
 // Health check endpoint
 app.get("/health", (_, res) => {
