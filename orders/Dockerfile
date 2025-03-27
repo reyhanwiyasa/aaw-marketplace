@@ -2,7 +2,7 @@
 FROM node:18.18.2 AS builder
 
 # Setting up the work directory
-WORKDIR /service-orders
+WORKDIR /orders
 
 # Copying package.json separately
 COPY package.json ./
@@ -27,11 +27,11 @@ ENV PORT 8001
 ENV NODE_ENV production
 
 # Set working directory
-WORKDIR /service-orders
+WORKDIR /orders
 
 # Copy built files from the previous stage
-COPY --from=builder /service-orders/dist ./dist
-COPY --from=builder /service-orders/package.json ./package.json
+COPY --from=builder /orders/dist ./dist
+COPY --from=builder /orders/package.json ./package.json
 
 # Install production dependencies only
 RUN npm install --only=production

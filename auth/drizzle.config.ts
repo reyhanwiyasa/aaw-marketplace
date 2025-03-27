@@ -1,5 +1,8 @@
 import "dotenv/config";
 import type { Config } from "drizzle-kit";
+console.log(
+  "apa iyadfsdaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+);
 
 export default {
   schema: "./db/schema/**/*.ts",

@@ -1,16 +1,10 @@
 import dotenv from "dotenv";
 dotenv.config();
-
 import express, { Express, NextFunction, Request, Response } from "express";
 import cors from "cors";
-
-// import authRoutes from "./auth/user.routes"
-// import orderRoutes from "./orders/order/order.routes";
-// import cartRoutes from "./orders/cart/cart.routes";
-// import productRoutes from './product/product.routes'
 import tenantRoutes from "./tenant/tenant.routes";
-// import wishlistRoutes from "./wishlist/wishlist.routes";
-
+import swaggerUi from "swagger-ui-express";
+import swaggerJsdoc from "swagger-jsdoc";
 import express_prom_bundle from "express-prom-bundle";
 
 const app: Express = express();
@@ -32,13 +26,25 @@ app.use(metricsMiddleware);
 app.use(cors());
 app.use(express.json());
 
-// Routes
-// app.use('/api/auth', authRoutes);
-// app.use('/api/order', orderRoutes);
-// app.use('/api/cart', cartRoutes);
-// app.use("/api/product", productRoutes);
+// Swagger configuration
+const swaggerOptions = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "Marketplace API",
+      version: "1.0.0",
+      description: "API documentation for the Marketplace",
+    },
+  },
+  apis: ["./src/**/*.ts"],
+};
+
+const swaggerSpec = swaggerJsdoc(swaggerOptions);
+
+// Serve Swagger UI at /api-docs
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 app.use("/api/tenant", tenantRoutes);
-// app.use('/api/wishlist', wishlistRoutes);
 
 // Health check endpoint
 app.get("/health", (_, res) => {

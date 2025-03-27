@@ -1,24 +1,7 @@
 version: "3.8"
 
 services:
-  db:
-    image: postgres:latest
-    environment:
-      POSTGRES_DB: postgres
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    ports:
-      - "5432:5432"
-
-  migrate:
-    build:
-      context: .
-      target: builder
-    depends_on:
-      - db
-    command: sh -c "pnpm generate && pnpm migrate"
-    # command: sh -c "sleep 300"
-
+  # Node.js application service
   microservice:
     build: .
     ports:
@@ -28,5 +11,16 @@ services:
       - JWT_SECRET=auth_ms_jwt_secret
       - DB_HOST=db
       - DB_PORT=5432
+      - DB_NAME=auth
     depends_on:
-      - migrate
+      - db
+
+  # PostgreSQL database service
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: auth
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5431:5432"

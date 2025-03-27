@@ -7,6 +7,8 @@ import cors from "cors";
 import productRoutes from "./product/product.routes";
 
 import express_prom_bundle from "express-prom-bundle";
+import swaggerUi from "swagger-ui-express";
+import swaggerJsdoc from "swagger-jsdoc";
 
 const app: Express = express();
 
@@ -27,7 +29,25 @@ app.use(metricsMiddleware);
 app.use(cors());
 app.use(express.json());
 
+// Swagger configuration
+const swaggerOptions = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "Marketplace API",
+      version: "1.0.0",
+      description: "API documentation for the Marketplace",
+    },
+  },
+  apis: ["./src/**/*.ts"],
+};
+
+const swaggerSpec = swaggerJsdoc(swaggerOptions);
+
+// Serve Swagger UI at /api-docs
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 // Routes
+
 app.use("/api/product", productRoutes);
 
 // Health check endpoint

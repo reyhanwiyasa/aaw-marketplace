@@ -8,7 +8,8 @@ import orderRoutes from "./order/order.routes";
 import cartRoutes from "./cart/cart.routes";
 
 import express_prom_bundle from "express-prom-bundle";
-
+import swaggerUi from "swagger-ui-express";
+import swaggerJsdoc from "swagger-jsdoc";
 const app: Express = express();
 
 // Prometheus metrics middleware
@@ -17,7 +18,7 @@ const metricsMiddleware = express_prom_bundle({
   includePath: true,
   includeStatusCode: true,
   includeUp: true,
-  customLabels: { project_name: "marketplace-monolith" },
+  customLabels: { project_name: "marketplace" },
   promClient: {
     collectDefaultMetrics: {},
   },
@@ -27,7 +28,38 @@ const metricsMiddleware = express_prom_bundle({
 app.use(metricsMiddleware);
 app.use(cors());
 app.use(express.json());
+// Middleware
+app.use(metricsMiddleware);
+app.use(cors());
+app.use(express.json());
 
+// Swagger configuration
+const swaggerOptions = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "Marketplace API",
+      version: "1.0.0",
+      description: "API documentation for the Marketplace",
+    },
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
+      },
+    },
+    security: [{ bearerAuth: [] }], // apply globally if needed
+  },
+  apis: ["./src/**/*.ts"],
+};
+
+const swaggerSpec = swaggerJsdoc(swaggerOptions);
+
+// Serve Swagger UI at /api-docs
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 // Routes
 app.use("/api/order", orderRoutes);
 app.use("/api/cart", cartRoutes);

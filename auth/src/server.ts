@@ -1,9 +1,8 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-import express, { Express, NextFunction, Request, Response } from "express";
+import express, { Express, Request, Response } from "express";
 import cors from "cors";
-
 import authRoutes from "./user/user.routes";
 // import orderRoutes from "./orders/order/order.routes";
 // import cartRoutes from "./orders/cart/cart.routes";
@@ -13,6 +12,10 @@ import authRoutes from "./user/user.routes";
 
 import express_prom_bundle from "express-prom-bundle";
 
+// Import Swagger dependencies
+import swaggerUi from "swagger-ui-express";
+import swaggerJsdoc from "swagger-jsdoc";
+
 const app: Express = express();
 
 // Prometheus metrics middleware
@@ -21,7 +24,7 @@ const metricsMiddleware = express_prom_bundle({
   includePath: true,
   includeStatusCode: true,
   includeUp: true,
-  customLabels: { project_name: "marketplace-monolith" },
+  customLabels: { project_name: "marketplace" },
   promClient: {
     collectDefaultMetrics: {},
   },
@@ -32,22 +35,42 @@ app.use(metricsMiddleware);
 app.use(cors());
 app.use(express.json());
 
+// Swagger configuration
+const swaggerOptions = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "Marketplace API",
+      version: "1.0.0",
+      description: "API documentation for the Marketplace",
+    },
+  },
+  // Adjust the paths to match where your route files are located and documented with JSDoc comments.
+  apis: ["./src/**/*.ts"],
+};
+
+const swaggerSpec = swaggerJsdoc(swaggerOptions);
+
+// Serve Swagger UI at /api-docs
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 // Routes
 app.use("/api/auth", authRoutes);
 
 // Health check endpoint
-app.get("/health", (_, res) => {
+app.get("/health", (_: Request, res: Response) => {
   res.status(200).json({ status: "healthy" });
 });
 
 // Root endpoint
-app.get("/", (_, res) => {
+app.get("/", (_: Request, res: Response) => {
   res.status(200).json({
     message: "Marketplace API",
     version: "1.0.0",
   });
 });
 
+// 404 handler
 app.use((req: Request, res: Response) => {
   res.status(404).json({
     message: "Not Found",

@@ -4,14 +4,14 @@ services:
   # Node.js application service
   microservice:
     build: .
-    environment:
-      - TENANT_ID=47dd6b24-0b23-46b0-a662-776158d089ba
-      - AUTH_MS_URL=http://host.docker.internal:8000
-      - TENANT_MS_URL=http://host.docker.internal:8003
-      - DB_HOST=db
-      - DB_PORT=5432
     ports:
       - "8002:8002"
+    environment:
+      - TENANT_ID=47dd6b24-0b23-46b0-a662-776158d089ba
+      - JWT_SECRET=auth_ms_jwt_secret
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=products
     depends_on:
       - db
 
@@ -19,8 +19,8 @@ services:
   db:
     image: postgres:latest
     environment:
-      POSTGRES_DB: postgres
+      POSTGRES_DB: products
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
-      - "5430:5432"
+      - "5429:5432"

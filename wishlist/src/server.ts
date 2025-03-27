@@ -4,7 +4,8 @@ dotenv.config();
 import express, { Express, NextFunction, Request, Response } from "express";
 import cors from "cors";
 import wishlistRoutes from "./wishlist/wishlist.routes";
-
+import swaggerUi from "swagger-ui-express";
+import swaggerJsdoc from "swagger-jsdoc";
 import express_prom_bundle from "express-prom-bundle";
 
 const app: Express = express();
@@ -25,6 +26,24 @@ const metricsMiddleware = express_prom_bundle({
 app.use(metricsMiddleware);
 app.use(cors());
 app.use(express.json());
+
+// Swagger configuration
+const swaggerOptions = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "Marketplace API",
+      version: "1.0.0",
+      description: "API documentation for the Marketplace",
+    },
+  },
+  apis: ["./src/**/*.ts"],
+};
+
+const swaggerSpec = swaggerJsdoc(swaggerOptions);
+
+// Serve Swagger UI at /api-docs
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Routes
 app.use("/api/wishlist", wishlistRoutes);
